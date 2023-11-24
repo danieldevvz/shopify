@@ -12,15 +12,19 @@ const shopify = new Shopify({
 });
 
 app.get('/products', async (req, res) => {
-  const products = await shopify.product.list();
-  const formattedProducts = products.map(product => {
-    return {
-      ...product,
-      created_at: moment(product.created_at).format('YYYY-DD-MM')
-    };
+    const products = await shopify.product.list();
+    const formattedProducts = products.map(product => {
+      return {
+        ...product,
+        created_at: moment(product.created_at).format('YYYY-DD-MM')
+      };
+    });
+  
+    // Sort the products by 'created_at' in ascending order
+    const sortedProducts = formattedProducts.sort((a, b) => a.created_at.localeCompare(b.created_at));
+  
+    res.json(sortedProducts); // send the sorted JSON as a response
   });
-  console.log(JSON.stringify(formattedProducts));
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
